@@ -1,7 +1,7 @@
 general:
   train_mode: true
   task: "instance_segmentation"
-  seed: null
+  seed: 999
   checkpoint: null
   backbone_checkpoint: null
   freeze_backbone: false # train only last layer
@@ -16,13 +16,13 @@ general:
   use_dbscan: false
   ignore_class_threshold: 100
   project_name: scannet
-  workspace: jonasschult
+  workspace: amineboudjoghra
   experiment_name: DEBUG_ABLATION
-  num_targets: 19
+  num_targets: 201
   add_instance: true
   dbscan_eps: 0.95
   dbscan_min_points: 1
-
+  max_epochs: 601
 
   export_threshold: 0.0001
 
@@ -50,14 +50,14 @@ general:
   # version: 1 # md5[:8] of config
 
   gpus: 1
-  train_oracle: false
+  train_oracle: False
   OW_task: 'task1'
   split: 'A'
 
 defaults:
   - data: indoor
   - data/data_loaders: simple_loader
-  - data/datasets: scannet
+  - data/datasets: scannet200
   - data/collation_functions: voxelize_collate
   - logging: full
   - model: mask3d

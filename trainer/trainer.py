@@ -117,6 +117,7 @@ class InstanceSegmentation(pl.LightningModule):
         self.iou = IoU()
         # misc
         self.labels_info = dict()
+        self.train_oracle = self.config.general.train_oracle
 
     def forward(
         self, x, point2segment=None, raw_coordinates=None, is_eval=False
@@ -1233,28 +1234,13 @@ class InstanceSegmentation(pl.LightningModule):
     
     def task(self,target, eval = False, task_ow = 'task1', split = 'A',File_names = None):
         unknown_classes_ids = UNKNOWN_CLASSES_IDS[split][task_ow]
-        prev_classes_ids = PREV_KNOWN_CLASSES_IDS[split][task_ow]
-        examplar_list_path = "data/processed/scannet200/exemplars/"+split+"/"+task_ow+"/"+"examplar_list.yaml"
-        if os.path.exists(examplar_list_path):
-            with open(examplar_list_path) as user_file:
-                examplar_list = yaml.load(user_file, Loader=SafeLoader)
                 
         if (unknown_classes_ids != None):
             if not eval and self.train_oracle:
                 for batch_id in range(len(target)):
-                    for k, h in zip(unknown_classes_ids,prev_classes_ids):
-                        try:
-                            target[batch_id]['labels'][target[batch_id]['labels']==k]=253 #set the tail classes as known
-                        except:
-                            pass
-
-
-        elif unknown_classes_ids != None:
-            if not eval and self.train_oracle:
-                for batch_id in range(len(target)):
                     for k in unknown_classes_ids:
                         try:
-                            target[batch_id]['labels'][target[batch_id]['labels']==k]=253
+                            target[batch_id]['labels'][target[batch_id]['labels']==k]=253 #set the tail classes as known
                         except:
                             pass
         return target
